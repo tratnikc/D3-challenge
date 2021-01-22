@@ -65,7 +65,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .call(xAxis);
     
     // add the dots
-    chartGroup.append("g")
+    var circlesGroup = chartGroup.append("g")
                 .classed("stateCircle", true)
                 .selectAll("circle")
                 .data(hpdata)
@@ -73,7 +73,10 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .append("circle")
                 .attr("cx", d => xScale(d.poverty))
                 .attr("cy", function (d) {return yScale(d.healthcare);})
-                .attr("r", 5)
+                .attr("r", 5);
+
+    // append tooltip div
+    
 
 
 
