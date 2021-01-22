@@ -18,6 +18,7 @@ var height = svgHeight - margin.top - margin.bottom;
 
 var svg = d3.select("#scatter")
     .append("svg")
+    .classed("chart", true)
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
@@ -72,11 +73,13 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .enter()
                 .append("circle")
                 .attr("cx", d => xScale(d.poverty))
-                .attr("cy", function (d) {return yScale(d.healthcare);})
+                .attr("cy", d => yScale(d.healthcare))
                 .attr("r", 5);
 
     // append tooltip div
-    
+    var toolTip = d3.select(".chart")
+                    .append("div");
+
 
 
 
