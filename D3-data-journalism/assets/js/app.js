@@ -39,6 +39,32 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
     });
     console.log(hpdata);
 
+    // create scales for the chart
+    var xScale = d3.scaleLinear()
+                    .range([0,width])
+                    .domain(d3.extent(hpdata, data => data.poverty));
+
+    var yScale = d3.scaleLinear()
+                    .range([height, 0])
+                    .domain([0, d3.max(hpdata, data => data.healthcare)]);
+
+    // create the axes
+    var xAxis = d3.axisBottom(xScale);
+    var yAxis = d3.axisLeft(yScale);
+
+    // append the axes
+    // append y axis
+    chartGroup.append("g")
+                .classed("axis", true)
+                .call(yAxis);
+
+    // append x axis
+    chartGroup.append("g")
+                .classed("axis", true)
+                .attr("transform", `translate(0, ${height})`)
+                .call(xAxis);
+    
+
 
 
 }).catch(function(error) {
