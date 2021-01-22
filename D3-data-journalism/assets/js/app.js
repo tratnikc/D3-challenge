@@ -64,6 +64,16 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("transform", `translate(0, ${height})`)
                 .call(xAxis);
     
+    // add the dots
+    chartGroup.append("g")
+                .classed("stateCircle", true)
+                .selectAll("dots")
+                .data(hpdata)
+                .enter()
+                .append("circle")
+                .attr("cx", d => xScale(d.poverty))
+                .attr("cy", d => yScale(d.healthcare))
+                .attr("r", 5)
 
 
 
