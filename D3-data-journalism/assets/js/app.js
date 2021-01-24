@@ -52,7 +52,37 @@ function yScale(censusData, chosenYAxis) {
                         .domain([0, d3.max(censusData, d => d[chosenYAxis])])
                         .range([height, 0]);
     return yLinearScale;
-}
+};
+
+// update Tooltip based on chosen data
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+    var xLabel;
+    var yLabel;
+
+    console.log(chosenXAxis);
+    console.log(chosenYAxis);
+
+    if (chosenXAxis === "poverty") {xLabel = "In Poverty (%): "}
+    else if (chosenXAxis === "age") {xLabel = "Age (Median): "}
+    else {xLabel = "Household Income (Median): "};
+
+    if (chosenYAxis === "healthcare") {yLabel = "Lacks Healthcare (%): "}
+    else if (chosenYAxis === "smokes") {yLabel = "Smokes (%): "}
+    else {yLabel = "Obese (%): "};
+    
+    var toolTip = d3.tip().attr('class', 'd3-tip').html(function(d) {
+        return `<div> ${d.state} <br> ${xLabel} ${d[chosenXAxis]}% <br> ${yLabel} ${d[chosenYAxis]}% </div>`; 
+    });
+
+    circlesGroup.call(toolTip);
+
+    // create mouseover and mouseout
+    circlesGroup.on("mouseover", function (d) {toolTip.show(d, this);})
+                .on("mouseout", function (d){ toolTip.hide(d, this)});
+
+    return circlesGroup;
+
+};
 
 // import the data from /data/data.csv
 d3.csv("assets/data/data.csv").then((hpdata) => {
@@ -124,16 +154,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("alignment-baseline", "central");
 
     // append tooltip div
-    var toolTip = d3.tip().attr('class', 'd3-tip').html(function(d) {
-        return `<div> ${d.state} <br> Poverty: ${d.poverty}% <br> HealthCare: ${d.healthcare}% </div>`; 
-    });
-
-    // toolTip
-    chartGroup.call(toolTip);
-
-    // create mouseover and mouseout
-    circlesGroup.on("mouseover", function (d) {toolTip.show(d, this);})
-                .on("mouseout", function (d){ toolTip.hide(d, this)})
+    var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     // create axes labels
     // create group for x-axis labels
@@ -164,6 +185,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
 
 
     var yLabelsGroup = chartGroup.append("g")
+        .attr("class", "y-labels")
         .attr("transform", "rotate(-90)")
     
     var yHealthLabel = yLabelsGroup.append("text")
@@ -171,6 +193,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .attr("x", 0 - (height/2))
         .attr("dy", "1em")
         .attr("class", "active")
+        .attr("value", "healthcare")
         .text("Lacks Healthcare (%)");
     
     var ySmokesLabel = yLabelsGroup.append("text")
@@ -178,6 +201,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .attr("x", 0 - (height/2))
         .attr("dy", "1em")
         .attr("class", "inactive")
+        .attr("value","smokes")
         .text("Smokes (%)");
     
     var yObesityLabel = yLabelsGroup.append("text")
@@ -185,6 +209,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .attr("x", 0 - (height/2))
         .attr("dy", "1em")
         .attr("class", "inactive")
+        .attr("value","obesity")
         .text("Obese (%)");
 
 }).catch(function(error) {
