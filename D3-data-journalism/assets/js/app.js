@@ -1,6 +1,6 @@
 // set up chart
-var svgWidth = 960; // window.innerWidth;
-var svgHeight = 500;// window.innerHeight;
+var svgWidth = 960; //window.innerWidth;
+var svgHeight = 500; //window.innerHeight;
 
 var margin = {
     top: 20,
@@ -12,11 +12,8 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
- var w = parseInt(d3.select("#scatter").style("width"));
- var h = parseInt(d3.select("#scatter").style("height"));
-
- console.log(w);
- console.log(h);
+//  var w = parseInt(d3.select("#scatter").style("width"));
+//  var h = parseInt(d3.select("#scatter").style("height"));
 
 // create an svg wrapper
 // append an SVG group that will hold the chart
@@ -49,11 +46,11 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
 
     // create scales for the chart
     var xScale = d3.scaleLinear()
-                    .domain([0, d3.max(hpdata, data => data.poverty)])
+                    .domain([8, d3.max(hpdata, d => d.poverty)])
                     .range([0,width]);
 
     var yScale = d3.scaleLinear()
-                    .domain([0, d3.max(hpdata, data => data.healthcare)])
+                    .domain([0, d3.max(hpdata, d => d.healthcare)])
                     .range([height, 0]);
 
     // create the axes
@@ -73,15 +70,30 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .call(xAxis);
     
     // add the dots
-    var circlesGroup = chartGroup.selectAll(".dots")
+    var circlesGroup = chartGroup.selectAll("circle")
                 // .selectAll("circle")
                 .data(hpdata)
                 .enter()
                 .append("circle")
-                .classed("stateCircle", true)
                 .attr("cx", d => xScale(d.poverty))
                 .attr("cy", d => yScale(d.healthcare))
-                .attr("r", 15);
+                .attr("r", 15)
+                .classed("stateCircle", true)
+                .attr("opacity", "0.6");
+
+    // add text to circle
+    var circleText = chartGroup.selectAll()
+            .data(hpdata)
+            .enter()
+            .append("text")
+            .text(d => d.abbr)
+            .attr("x", d => xScale(d.poverty))
+            .attr("y", d => yScale(d.healthcare))
+            .attr("class", "stateText")
+            .attr("font-size", "12")
+            .attr("text-anchor", "middle")
+            .attr("alignment-baseline", "central")
+
 
     // append tooltip div
     var toolTip = d3.tip().attr('class', 'd3-tip').html(function(d) {
@@ -89,18 +101,21 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
     });
 
     // toolTip
-    circlesGroup.call(toolTip);
+    chartGroup.call(toolTip);
 
-    // create mouseover
-    circlesGroup.on("mouseover", function (d) {
-                    toolTip.show(d, this);
-                })
-                .on("mouseout", function (d){ toolTip.hide(d)})
+    // create mouseover and mouseout
+    circlesGroup.on("mouseover", function (d) {toolTip.show(d, this);})
+                .on("mouseout", function (d){ toolTip.hide(d, this)})
 
-
-
-
-
+    // create axes labels
+    var yLabel = chartGroup.append("g")
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left + 50)
+        .attr("x", 0 - (height/2))
+        .attr("dy", "1em")
+        .attr("class", "active")
+        .text("In Healthcare (%) ")
 
 }).catch(function(error) {
     console.log(error);
