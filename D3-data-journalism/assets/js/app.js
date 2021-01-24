@@ -62,13 +62,13 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     console.log(chosenXAxis);
     console.log(chosenYAxis);
 
-    if (chosenXAxis === "poverty") {xLabel = "In Poverty (%): "}
-    else if (chosenXAxis === "age") {xLabel = "Age (Median): "}
-    else {xLabel = "Household Income (Median): "};
+    if (chosenXAxis === "poverty") {xLabel = "Poverty (%): "}
+    else if (chosenXAxis === "age") {xLabel = "Age: "}
+    else {xLabel = "Income: "};
 
-    if (chosenYAxis === "healthcare") {yLabel = "Lacks Healthcare (%): "}
+    if (chosenYAxis === "healthcare") {yLabel = "Healthcare (%): "}
     else if (chosenYAxis === "smokes") {yLabel = "Smokes (%): "}
-    else {yLabel = "Obese (%): "};
+    else {yLabel = "Obesity (%): "};
     
     var toolTip = d3.tip().attr('class', 'd3-tip').html(function(d) {
         return `<div> ${d.state} <br> ${xLabel} ${d[chosenXAxis]}% <br> ${yLabel} ${d[chosenYAxis]}% </div>`; 
