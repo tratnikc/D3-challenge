@@ -54,6 +54,17 @@ function yScale(censusData, chosenYAxis) {
     return yLinearScale;
 };
 
+// function to redraw x-axis
+function renderXAxis(newXScale, xAxis) {
+    var bottomAxis = d3.axisBottom(newXScale);
+    xAxis.transition()
+        .duration(1000)
+        .call(bottomAxis);
+
+    return xAxis;
+};
+
+
 // update Tooltip based on chosen data
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     var xLabel;
@@ -211,6 +222,21 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .attr("class", "inactive")
         .attr("value","obesity")
         .text("Obese (%)");
+
+    // attach event listener to axes labels
+    labelsGroup.selectAll("text")
+        .on("click", function() {
+            // get selected value
+            var value = d3.select(this).attr("value");
+            if (value !== chosenXAxis) {
+                chosenXAxis = value;
+                console.log(chosenXAxis);
+                // update x axis scale
+                xLinearScale = xScale(hpdata, chosenXAxis);
+                xAxis = renderXAxis(xLinearScale, xAxis);
+            }
+
+        })
 
 }).catch(function(error) {
     console.log(error);
