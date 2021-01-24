@@ -5,14 +5,14 @@ var svgHeight = 500; //window.innerHeight;
 var margin = {
     top: 20,
     right: 40,
-    bottom: 60,
+    bottom: 80,
     left: 100
 };
 
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-//  var w = parseInt(d3.select("#scatter").style("width"));
+ var w = parseInt(d3.select("#scatter").style("width")) + margin.left + margin.right;
 //  var h = parseInt(d3.select("#scatter").style("height"));
 
 // create an svg wrapper
@@ -23,15 +23,22 @@ var svg = d3
     .select("#scatter")
     .append("svg")
     .classed("chart", true)
-    .attr("width", svgWidth)  
+    .attr("width", w)  
     .attr("height", svgHeight)
 
 // append SVG group
 var chartGroup = svg.append("g")
+    // .classed("chart", true)
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+console.log(parseInt(d3.select("svg").style("width")));
+console.log(margin.left);
 
 // Initial Parameters
 var chosenXAxis = "poverty";
+
+// function used on updating x-scale variable upon clicking on axis label
+
 
 // import the data from /data/data.csv
 d3.csv("assets/data/data.csv").then((hpdata) => {
@@ -72,31 +79,31 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("transform", `translate(0, ${height})`)
                 .call(xAxis);
     
-    // add the dots
-    var circlesGroup = chartGroup.selectAll("circle")
+    // add the dots and text
+    var circlesGroup = chartGroup.selectAll()
                 // .selectAll("circle")
                 .data(hpdata)
                 .enter()
+                .append("g")
+                // .attr("transform", `translate(d => xScale(d.poverty),d => yScale(d.healthcare))`)
                 .append("circle")
+                .attr("class", d => d.abbr)
                 .attr("cx", d => xScale(d.poverty))
                 .attr("cy", d => yScale(d.healthcare))
                 .attr("r", 12)
                 .classed("stateCircle", true)
-                .attr("opacity", "0.6");
-
-    // add text to circle
-    var circleText = chartGroup.selectAll()
-            .data(hpdata)
-            .enter()
-            .append("text")
-            .text(d => d.abbr)
-            .attr("x", d => xScale(d.poverty))
-            .attr("y", d => yScale(d.healthcare))
-            .attr("class", "stateText")
-            .attr("font-size", "12")
-            .attr("text-anchor", "middle")
-            .attr("alignment-baseline", "central")
-
+                .attr("opacity", "0.6")
+                .select()
+                .data(hpdata)
+                .enter()
+                .append("text")
+                .text(d => d.abbr)
+                .attr("x", d => xScale(d.poverty))
+                .attr("y", d => yScale(d.healthcare))
+                .attr("class", "stateText")
+                .attr("font-size", "12")
+                .attr("text-anchor", "middle")
+                .attr("alignment-baseline", "central");
 
     // append tooltip div
     var toolTip = d3.tip().attr('class', 'd3-tip').html(function(d) {
@@ -128,7 +135,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .attr("x", 0 - (height/2))
         .attr("dy", "1em")
         .attr("class", "active")
-        .text("In Healthcare (%) ")
+        .text("Lacks Healthcare (%) ")
     
     
 
