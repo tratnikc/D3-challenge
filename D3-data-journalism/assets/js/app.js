@@ -26,9 +26,12 @@ var svg = d3
     .attr("width", svgWidth)  
     .attr("height", svgHeight)
 
-
+// append SVG group
 var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+// Initial Parameters
+var chosenXAxis = "poverty";
 
 // import the data from /data/data.csv
 d3.csv("assets/data/data.csv").then((hpdata) => {
