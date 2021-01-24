@@ -80,7 +80,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .append("circle")
                 .attr("cx", d => xScale(d.poverty))
                 .attr("cy", d => yScale(d.healthcare))
-                .attr("r", 15)
+                .attr("r", 12)
                 .classed("stateCircle", true)
                 .attr("opacity", "0.6");
 
