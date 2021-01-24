@@ -163,14 +163,29 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .text("Household Income (Median)");
 
 
-    var yLabels = chartGroup.append("text")
+    var yLabelsGroup = chartGroup.append("g")
         .attr("transform", "rotate(-90)")
+    
+    var yHealthLabel = yLabelsGroup.append("text")
         .attr("y", 0 - margin.left + 50)
         .attr("x", 0 - (height/2))
         .attr("dy", "1em")
         .attr("class", "active")
-        .text("Lacks Healthcare (%) ")
+        .text("Lacks Healthcare (%)");
     
+    var ySmokesLabel = yLabelsGroup.append("text")
+        .attr("y", 0 - margin.left + 30)
+        .attr("x", 0 - (height/2))
+        .attr("dy", "1em")
+        .attr("class", "inactive")
+        .text("Smokes (%)");
+    
+    var yObesityLabel = yLabelsGroup.append("text")
+        .attr("y", 0 - margin.left + 10)
+        .attr("x", 0 - (height/2))
+        .attr("dy", "1em")
+        .attr("class", "inactive")
+        .text("Obese (%)");
 
 }).catch(function(error) {
     console.log(error);
