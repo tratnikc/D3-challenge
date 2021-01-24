@@ -64,6 +64,16 @@ function renderXAxis(newXScale, xAxis) {
     return xAxis;
 };
 
+// function to redraw y-axis
+function renderYAxis(newYScale, yAxis) {
+    var leftAxis = d3.axisLeft(newYScale);
+    yAxis.transition()
+        .duration(1000)
+        .call(leftAxis);
+
+    return yAxis;
+};
+
 
 // update Tooltip based on chosen data
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
@@ -135,7 +145,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .call(bottomAxis);
 
     // append y axis
-    chartGroup.append("g")
+    var yAxis = chartGroup.append("g")
                 .classed("y-axis", true)
                 .call(leftAxis);
     
@@ -235,7 +245,19 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 xLinearScale = xScale(hpdata, chosenXAxis);
                 xAxis = renderXAxis(xLinearScale, xAxis);
             }
-
+        })
+    
+    yLabelsGroup.selectAll("text")
+        .on("click", function() {
+            // update y axis scale
+            var value = d3.select(this).attr("value");
+            if (value !== chosenYAxis) {
+                chosenYAxis = value;
+                console.log(chosenYAxis);
+                yLinearScale = yScale(hpdata, chosenYAxis);
+                yAxis = renderYAxis(yLinearScale, yAxis);    
+            }
+            
         })
 
 }).catch(function(error) {
