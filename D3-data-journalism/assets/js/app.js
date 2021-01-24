@@ -108,14 +108,26 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .on("mouseout", function (d){ toolTip.hide(d, this)})
 
     // create axes labels
-    var yLabel = chartGroup.append("g")
-        .append("text")
+    // create group for x-axis labels
+    var labelsGroup = chartGroup.append("g")
+        .attr("transform", `translate(${width / 2}, ${height + 20})`)
+
+    var xPovertyLabel = labelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 20)
+        .attr("value", "poverty") // value to grab for event listener
+        .classed("active", true)
+        .text("In Poverty (%)");
+
+    var yLabel = chartGroup.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left + 50)
         .attr("x", 0 - (height/2))
         .attr("dy", "1em")
         .attr("class", "active")
         .text("In Healthcare (%) ")
+    
+    
 
 }).catch(function(error) {
     console.log(error);
