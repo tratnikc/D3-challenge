@@ -36,48 +36,68 @@ console.log(margin.left);
 
 // Initial Parameters
 var chosenXAxis = "poverty";
+var chosenYAxis = "healthcare";
 
 // function used on updating x-scale variable upon clicking on axis label
+function xScale(censusData, chosenXAxis) {
+    // create scales
+    console.log(censusData["poverty"]);
+    var xLinearScale = d3.scaleLinear()
+                        .domain([8, d3.max(censusData, d => d[chosenXAxis])])
+                        .range([0, width]);
+    return xLinearScale;
+};
 
+function yScale(censusData, chosenYAxis) {
+    var yLinearScale = d3.scaleLinear()
+                        .domain([0, d3.max(censusData, d => d[chosenYAxis])])
+                        .range([height, 0]);
+    return yLinearScale;
+}
 
 // import the data from /data/data.csv
 d3.csv("assets/data/data.csv").then((hpdata) => {
-    console.log(hpdata);
+
     // parse the data to numeric values
     hpdata.forEach(function(data) {
+
         // healthcare vs poverty
         data.healthcare = +data.healthcare;
         data.poverty = +data.poverty;
+        
         // smokers vs age
         data.age = +data.age;
         data.smokes = +data.smokes;
+
+        // obesity vs household income
+        data.obesity = +data.obesity;
+        data.income = +data.income;
+
     });
     console.log(hpdata);
 
     // create scales for the chart
-    var xScale = d3.scaleLinear()
-                    .domain([8, d3.max(hpdata, d => d.poverty)])
-                    .range([0,width]);
-
-    var yScale = d3.scaleLinear()
-                    .domain([0, d3.max(hpdata, d => d.healthcare)])
-                    .range([height, 0]);
+    // call function xScale 
+    var xLinearScale = xScale(hpdata, chosenXAxis);
+    
+    // create y scale function
+    var yLinearScale = yScale(hpdata, chosenYAxis);
 
     // create the axes
-    var xAxis = d3.axisBottom(xScale);
-    var yAxis = d3.axisLeft(yScale);
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
 
     // append the axes
+    // append x axis
+    var xAxis = chartGroup.append("g")
+                .classed("x-axis", true)
+                .attr("transform", `translate(0, ${height})`)
+                .call(bottomAxis);
+
     // append y axis
     chartGroup.append("g")
                 .classed("y-axis", true)
-                .call(yAxis);
-
-    // append x axis
-    chartGroup.append("g")
-                .classed("x-axis", true)
-                .attr("transform", `translate(0, ${height})`)
-                .call(xAxis);
+                .call(leftAxis);
     
     // add the dots and text
     var circlesGroup = chartGroup.selectAll()
@@ -85,21 +105,20 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .data(hpdata)
                 .enter()
                 .append("g")
-                // .attr("transform", `translate(d => xScale(d.poverty),d => yScale(d.healthcare))`)
                 .append("circle")
                 .attr("class", d => d.abbr)
-                .attr("cx", d => xScale(d.poverty))
-                .attr("cy", d => yScale(d.healthcare))
-                .attr("r", 12)
+                .attr("cx", d => xLinearScale(d[chosenXAxis]))
+                .attr("cy", d => yLinearScale(d[chosenYAxis]))
+                .attr("r", 15)
                 .classed("stateCircle", true)
-                .attr("opacity", "0.6")
+                .attr("opacity", "0.5")
                 .select()
                 .data(hpdata)
                 .enter()
                 .append("text")
                 .text(d => d.abbr)
-                .attr("x", d => xScale(d.poverty))
-                .attr("y", d => yScale(d.healthcare))
+                .attr("x", d => xLinearScale(d[chosenXAxis]))
+                .attr("y", d => yLinearScale(d[chosenYAxis]))
                 .attr("class", "stateText")
                 .attr("font-size", "12")
                 .attr("text-anchor", "middle")
@@ -136,7 +155,6 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .attr("dy", "1em")
         .attr("class", "active")
         .text("Lacks Healthcare (%) ")
-    
     
 
 }).catch(function(error) {
