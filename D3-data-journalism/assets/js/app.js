@@ -76,16 +76,22 @@ function renderYAxis(newYScale, yAxis) {
 
 // function to render circles with new values
 function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
-    // var dots = d3.select("g").selectAll("dots");
-    // if (!dots.empty()) {
-    //     dots.remove();
-    // }
     circlesGroup.transition()
         .duration(1000)
         .attr("cx", d => newXScale(d[chosenXAxis]))
         .attr("cy", d => newYScale(d[chosenYAxis]));
     console.log(circlesGroup)
     return circlesGroup;
+};
+
+// function to render text in circles
+function renderTexts(circlesText, newXScale, chosenXAxis, newYScale, chosenYAxis) {
+    circlesText.transition()
+        .duration(1000)
+        .attr("x", d => newXScale(d[chosenXAxis]))
+        .attr("y", d => newYScale(d[chosenYAxis]));
+    
+    return circlesText;
 };
 
 // update Tooltip based on chosen data
@@ -164,11 +170,8 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
     
     // add the dots and text
     var circlesGroup = chartGroup.selectAll()
-                // .selectAll("circle")
                 .data(hpdata)
                 .enter()
-                // .append("g")
-                // .classed("dots", true)
                 .append("circle")
                 .attr("class", d => d.abbr)
                 .attr("cx", d => xLinearScale(d[chosenXAxis]))
@@ -262,8 +265,9 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 console.log(xLinearScale);
                 xAxis = renderXAxis(xLinearScale, xAxis);
 
-                // update circles with new x values
+                // update circles with new x values and texts
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+                circlesText = renderTexts(circlesText, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
                 // update tooltip
                 circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
@@ -301,8 +305,9 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 yLinearScale = yScale(hpdata, chosenYAxis);
                 yAxis = renderYAxis(yLinearScale, yAxis);
 
-                // update circles with new x values
+                // update circles with new x values and texts
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+                circlesText = renderTexts(circlesText, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
                 // update tooltip
                 circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
