@@ -41,14 +41,14 @@ var chosenYAxis = "healthcare";
 function xScale(censusData, chosenXAxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-                        .domain([d3.min(censusData, d => d[chosenXAxis]), d3.max(censusData, d => d[chosenXAxis])])
+                        .domain([d3.min(censusData, d => d[chosenXAxis]) * 0.9, d3.max(censusData, d => d[chosenXAxis]) * 1.1])
                         .range([0, width]);
     return xLinearScale;
 };
 
 function yScale(censusData, chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
-                        .domain([d3.min(censusData, d => d[chosenYAxis]), d3.max(censusData, d => d[chosenYAxis])])
+                        .domain([d3.min(censusData, d => d[chosenYAxis]) * 0.7, d3.max(censusData, d => d[chosenYAxis]) * 1.1])
                         .range([height, 0]);
     return yLinearScale;
 };
@@ -114,8 +114,12 @@ function updateToolTip(chosenXAxis, chosenYAxis, xGroup, yGroup) {
     yGroup.call(toolTip);
 
     // create mouseover and mouseout
-    xGroup.on("mouseover", function (d) {toolTip.show(d, this);})
-        .on("mouseout", function (d){ toolTip.hide(d, this)});
+    xGroup.on("mouseover", function (d) {
+        d3.select(this).style("stroke", "black");
+        toolTip.show(d, this);})
+        .on("mouseout", function (d){ 
+            d3.select(this).style("stroke", "white")
+            toolTip.hide(d, this)});
     yGroup.on("mouseover", function (d) {toolTip.show(d, this);})
         .on("mouseout", function (d){ toolTip.hide(d, this)});
 
