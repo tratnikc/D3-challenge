@@ -92,29 +92,34 @@ function renderTexts(circlesText, newXScale, chosenXAxis, newYScale, chosenYAxis
 };
 
 // update Tooltip based on chosen data
-function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+function updateToolTip(chosenXAxis, chosenYAxis, xGroup, yGroup) {
     var xLabel;
     var yLabel;
 
     if (chosenXAxis === "poverty") {xLabel = "Poverty (%): "}
     else if (chosenXAxis === "age") {xLabel = "Age: "}
-    else {xLabel = "Income: "};
+    else if (chosenXAxis === "income") {xLabel = "Income: ";};
 
     if (chosenYAxis === "healthcare") {yLabel = "Healthcare (%): "}
     else if (chosenYAxis === "smokes") {yLabel = "Smokes (%): "}
-    else {yLabel = "Obesity (%): "};
+    else if (chosenYAxis === "obesity") {yLabel = "Obesity (%): "};
     
     var toolTip = d3.tip().attr('class', 'd3-tip').html(function(d) {
-        return `<div> ${d.state} <br> ${xLabel} ${d[chosenXAxis]} <br> ${yLabel} ${d[chosenYAxis]} </div>`; 
+        return `<div> ${d.state} <br> 
+                ${xLabel} ${d[chosenXAxis].toLocaleString()} <br> 
+                ${yLabel} ${d[chosenYAxis]} </div>`; 
     });
 
-    circlesGroup.call(toolTip);
+    xGroup.call(toolTip);
+    yGroup.call(toolTip);
 
     // create mouseover and mouseout
-    circlesGroup.on("mouseover", function (d) {toolTip.show(d, this);})
-                .on("mouseout", function (d){ toolTip.hide(d, this)});
+    xGroup.on("mouseover", function (d) {toolTip.show(d, this);})
+        .on("mouseout", function (d){ toolTip.hide(d, this)});
+    yGroup.on("mouseover", function (d) {toolTip.show(d, this);})
+        .on("mouseout", function (d){ toolTip.hide(d, this)});
 
-    return circlesGroup;
+    return xGroup, yGroup;
 
 };
 
@@ -186,8 +191,8 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("alignment-baseline", "central");
 
     // append tooltip div
-    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-    circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesText);
+    var circlesGroup, circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, circlesText);
+    // var circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesText);
 
     // create axes labels
     // create group for x-axis labels
@@ -261,8 +266,8 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 circlesText = renderTexts(circlesText, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
                 // update tooltip
-                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-                circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesText);
+                circlesGroup, circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, circlesText);
+                // circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesText);
 
                 // change classes to bold text
                 switch (chosenXAxis) {
@@ -301,7 +306,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 circlesText = renderTexts(circlesText, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
                 // update tooltip
-                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+                circlesGroup, circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, circlesText);
 
 
                 // change classes to bold text
