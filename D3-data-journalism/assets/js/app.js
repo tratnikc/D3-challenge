@@ -32,7 +32,6 @@ var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 console.log(parseInt(d3.select("svg").style("width")));
-console.log(margin.left);
 
 // Initial Parameters
 var chosenXAxis = "poverty";
@@ -70,7 +69,6 @@ function renderYAxis(newYScale, yAxis) {
     yAxis.transition()
         .duration(1000)
         .call(leftAxis);
-
     return yAxis;
 };
 
@@ -80,7 +78,6 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYA
         .duration(1000)
         .attr("cx", d => newXScale(d[chosenXAxis]))
         .attr("cy", d => newYScale(d[chosenYAxis]));
-    console.log(circlesGroup)
     return circlesGroup;
 };
 
@@ -98,9 +95,6 @@ function renderTexts(circlesText, newXScale, chosenXAxis, newYScale, chosenYAxis
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     var xLabel;
     var yLabel;
-
-    console.log(chosenXAxis);
-    console.log(chosenYAxis);
 
     if (chosenXAxis === "poverty") {xLabel = "Poverty (%): "}
     else if (chosenXAxis === "age") {xLabel = "Age: "}
@@ -223,7 +217,6 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
         .attr("class", "inactive")
         .text("Household Income (Median)");
 
-
     var yLabelsGroup = chartGroup.append("g")
         .attr("class", "y-labels")
         .attr("transform", "rotate(-90)")
@@ -259,11 +252,9 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
             var value = d3.select(this).attr("value");
             if (value !== chosenXAxis) {
                 chosenXAxis = value;
-                console.log("xxxxx" + chosenXAxis);
-                console.log(chosenYAxis);
+
                 // update x axis scale
                 xLinearScale = xScale(hpdata, chosenXAxis);
-                console.log(xLinearScale);
                 xAxis = renderXAxis(xLinearScale, xAxis);
 
                 // update circles with new x values and texts
@@ -302,7 +293,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
             var value = d3.select(this).attr("value");
             if (value !== chosenYAxis) {
                 chosenYAxis = value;
-                console.log(chosenYAxis);
+
                 yLinearScale = yScale(hpdata, chosenYAxis);
                 yAxis = renderYAxis(yLinearScale, yAxis);
 
