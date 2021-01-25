@@ -274,7 +274,26 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 chosenYAxis = value;
                 console.log(chosenYAxis);
                 yLinearScale = yScale(hpdata, chosenYAxis);
-                yAxis = renderYAxis(yLinearScale, yAxis);    
+                yAxis = renderYAxis(yLinearScale, yAxis);
+
+                // change classes to bold text
+                switch (chosenYAxis) {
+                    case "healthcare":
+                        yHealthLabel.classed("active", true).classed("inactive", false);
+                        ySmokesLabel.classed("inactive", true);
+                        yObesityLabel.classed("inactive", true);
+                        break;
+                    case "smokes":
+                        ySmokesLabel.classed("active", true).classed("inactive", false);
+                        yHealthLabel.classed("inactive", true);
+                        yObesityLabel.classed("inactive", true);
+                        break;
+                    case "obesity":
+                        yObesityLabel.classed("active", true).classed("inactive", false);
+                        ySmokesLabel.classed("inactive", true);
+                        yHealthLabel.classed("inactive", true);
+                        break;
+                }
             }
             
         })
