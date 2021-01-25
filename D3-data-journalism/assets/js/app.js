@@ -41,14 +41,14 @@ var chosenYAxis = "healthcare";
 function xScale(censusData, chosenXAxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-                        .domain([8, d3.max(censusData, d => d[chosenXAxis])])
+                        .domain([d3.min(censusData, d => d[chosenXAxis]), d3.max(censusData, d => d[chosenXAxis])])
                         .range([0, width]);
     return xLinearScale;
 };
 
 function yScale(censusData, chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
-                        .domain([0, d3.max(censusData, d => d[chosenYAxis])])
+                        .domain([d3.min(censusData, d => d[chosenYAxis]), d3.max(censusData, d => d[chosenYAxis])])
                         .range([height, 0]);
     return yLinearScale;
 };
@@ -170,7 +170,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("class", d => d.abbr)
                 .attr("cx", d => xLinearScale(d[chosenXAxis]))
                 .attr("cy", d => yLinearScale(d[chosenYAxis]))
-                .attr("r", 15)
+                .attr("r", 12)
                 .classed("stateCircle", true)
                 .attr("opacity", "0.5")
 
@@ -183,7 +183,6 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("y", d => yLinearScale(d[chosenYAxis]))
                 .attr("class", "stateText")
                 .attr("font-size", "12")
-                .attr("text-anchor", "middle")
                 .attr("alignment-baseline", "central");
 
     // append tooltip div
