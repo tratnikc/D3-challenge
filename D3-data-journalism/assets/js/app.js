@@ -244,6 +244,25 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 // update x axis scale
                 xLinearScale = xScale(hpdata, chosenXAxis);
                 xAxis = renderXAxis(xLinearScale, xAxis);
+
+                // change classes to bold text
+                switch (chosenXAxis) {
+                    case "poverty":
+                        xPovertyLabel.classed("active", true).classed("inactive", false);
+                        xAgeLabel.classed("inactive", true);
+                        xIncomeLabel.classed("inactive", true);
+                        break;
+                    case "age":
+                        xAgeLabel.classed("active", true).classed("inactive", false);
+                        xPovertyLabel.classed("inactive", true);
+                        xIncomeLabel.classed("inactive", true);
+                        break;
+                    case "income":
+                        xIncomeLabel.classed("active", true).classed("inactive", false);
+                        xAgeLabel.classed("inactive", true);
+                        xPovertyLabel.classed("inactive", true);
+                        break;
+                }
             }
         })
     
