@@ -194,6 +194,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
 
     // append tooltip div
     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+    circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesText);
 
     // create axes labels
     // create group for x-axis labels
@@ -271,7 +272,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
 
                 // update tooltip
                 circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
-
+                circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesText);
 
                 // change classes to bold text
                 switch (chosenXAxis) {
