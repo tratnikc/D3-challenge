@@ -74,6 +74,19 @@ function renderYAxis(newYScale, yAxis) {
     return yAxis;
 };
 
+// function to render circles with new values
+function renderCircles(circlesGroup, newXScale, chosenXAxis, newYScale, chosenYAxis) {
+    // var dots = d3.select("g").selectAll("dots");
+    // if (!dots.empty()) {
+    //     dots.remove();
+    // }
+    circlesGroup.transition()
+        .duration(1000)
+        .attr("cx", d => newXScale(d[chosenXAxis]))
+        .attr("cy", d => newYScale(d[chosenYAxis]));
+    console.log(circlesGroup)
+    return circlesGroup;
+};
 
 // update Tooltip based on chosen data
 function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
@@ -92,7 +105,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     else {yLabel = "Obesity (%): "};
     
     var toolTip = d3.tip().attr('class', 'd3-tip').html(function(d) {
-        return `<div> ${d.state} <br> ${xLabel} ${d[chosenXAxis]}% <br> ${yLabel} ${d[chosenYAxis]}% </div>`; 
+        return `<div> ${d.state} <br> ${xLabel} ${d[chosenXAxis]} <br> ${yLabel} ${d[chosenYAxis]} </div>`; 
     });
 
     circlesGroup.call(toolTip);
@@ -154,7 +167,8 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 // .selectAll("circle")
                 .data(hpdata)
                 .enter()
-                .append("g")
+                // .append("g")
+                // .classed("dots", true)
                 .append("circle")
                 .attr("class", d => d.abbr)
                 .attr("cx", d => xLinearScale(d[chosenXAxis]))
@@ -162,7 +176,8 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("r", 15)
                 .classed("stateCircle", true)
                 .attr("opacity", "0.5")
-                .select()
+
+    var circlesText = chartGroup.selectAll()
                 .data(hpdata)
                 .enter()
                 .append("text")
@@ -175,7 +190,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .attr("alignment-baseline", "central");
 
     // append tooltip div
-    var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     // create axes labels
     // create group for x-axis labels
@@ -240,10 +255,19 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
             var value = d3.select(this).attr("value");
             if (value !== chosenXAxis) {
                 chosenXAxis = value;
-                console.log(chosenXAxis);
+                console.log("xxxxx" + chosenXAxis);
+                console.log(chosenYAxis);
                 // update x axis scale
                 xLinearScale = xScale(hpdata, chosenXAxis);
+                console.log(xLinearScale);
                 xAxis = renderXAxis(xLinearScale, xAxis);
+
+                // update circles with new x values
+                circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+
+                // update tooltip
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
 
                 // change classes to bold text
                 switch (chosenXAxis) {
@@ -264,7 +288,8 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                         break;
                 }
             }
-        })
+        }
+        )  // on-click event
     
     yLabelsGroup.selectAll("text")
         .on("click", function() {
@@ -275,6 +300,13 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 console.log(chosenYAxis);
                 yLinearScale = yScale(hpdata, chosenYAxis);
                 yAxis = renderYAxis(yLinearScale, yAxis);
+
+                // update circles with new x values
+                circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
+
+                // update tooltip
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
 
                 // change classes to bold text
                 switch (chosenYAxis) {
@@ -296,7 +328,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 }
             }
             
-        })
+        });    
 
 }).catch(function(error) {
     console.log(error);
