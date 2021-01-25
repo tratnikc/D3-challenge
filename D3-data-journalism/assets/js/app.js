@@ -41,14 +41,14 @@ var chosenYAxis = "healthcare";
 function xScale(censusData, chosenXAxis) {
     // create scales
     var xLinearScale = d3.scaleLinear()
-                        .domain([d3.min(censusData, d => d[chosenXAxis]), d3.max(censusData, d => d[chosenXAxis])])
+                        .domain([d3.min(censusData, d => d[chosenXAxis]) * .8, d3.max(censusData, d => d[chosenXAxis])])
                         .range([0, width]);
     return xLinearScale;
 };
 
 function yScale(censusData, chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
-                        .domain([d3.min(censusData, d => d[chosenYAxis]), d3.max(censusData, d => d[chosenYAxis])])
+                        .domain([d3.min(censusData, d => d[chosenYAxis]) * .8, d3.max(censusData, d => d[chosenYAxis])])
                         .range([height, 0]);
     return yLinearScale;
 };
@@ -114,10 +114,15 @@ function updateToolTip(chosenXAxis, chosenYAxis, xGroup, yGroup) {
     yGroup.call(toolTip);
 
     // create mouseover and mouseout
-    xGroup.on("mouseover", function (d) {toolTip.show(d, this);})
-        .on("mouseout", function (d){ toolTip.hide(d, this)});
+    xGroup.on("mouseover", function (d) {
+                d3.select(this).style("stroke", "black");
+                toolTip.show(d, this);})
+            .on("mouseout", function (d){ 
+                d3.select(this).style("stroke", "#e3e3e3");
+                toolTip.hide(d, this)});
+
     yGroup.on("mouseover", function (d) {toolTip.show(d, this);})
-        .on("mouseout", function (d){ toolTip.hide(d, this)});
+            .on("mouseout", function (d) {toolTip.hide(d, this)});
 
     return xGroup, yGroup;
 
@@ -168,27 +173,50 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 .call(leftAxis);
     
     // add the dots and text
-    var circlesGroup = chartGroup.selectAll()
-                .data(hpdata)
-                .enter()
-                .append("circle")
-                .attr("class", d => d.abbr)
-                .attr("cx", d => xLinearScale(d[chosenXAxis]))
-                .attr("cy", d => yLinearScale(d[chosenYAxis]))
-                .attr("r", 12)
-                .classed("stateCircle", true)
-                .attr("opacity", "0.5")
+    var gs = chartGroup.selectAll("g")
+        .data(hpdata)
+    
+    var element = gs.enter()
+        .append("g")
+        .attr("transform", function (d) { 
+            return "translate("+ 
+            xLinearScale(d[chosenXAxis]) + "," + yLinearScale(d[chosenYAxis]) + ")"
+        })
 
-    var circlesText = chartGroup.selectAll()
-                .data(hpdata)
-                .enter()
-                .append("text")
-                .text(d => d.abbr)
-                .attr("x", d => xLinearScale(d[chosenXAxis]))
-                .attr("y", d => yLinearScale(d[chosenYAxis]))
-                .attr("class", "stateText")
-                .attr("font-size", "12")
-                .attr("alignment-baseline", "central");
+    
+    var circlesGroup = element.append("circle")
+        .classed("stateCircle", true)
+        .attr("r", 12)
+        .attr("opacity", "0.5")
+    var circlesText = element
+        .append("text")
+        .text(d => d.abbr)
+        .attr("class", "stateText")
+        .attr("font-size", "12")
+        .attr("alignment-baseline", "central");
+
+    // var circlesGroup = chartGroup.selectAll()
+    //             .data(hpdata)
+    //             .enter()
+    //             .append("g")
+    //             .append("circle")
+    //             .attr("class", d => d.abbr)
+    //             .attr("cx", d => xLinearScale(d[chosenXAxis]))
+    //             .attr("cy", d => yLinearScale(d[chosenYAxis]))
+    //             .attr("r", 12)
+    //             .classed("stateCircle", true)
+    //             .attr("opacity", "0.5")
+
+    // var circlesText = chartGroup.selectAll()
+    //             .data(hpdata)
+    //             .enter()
+    //             .append("text")
+    //             .text(d => d.abbr)
+    //             .attr("x", d => xLinearScale(d[chosenXAxis]))
+    //             .attr("y", d => yLinearScale(d[chosenYAxis]))
+    //             .attr("class", "stateText")
+    //             .attr("font-size", "12")
+    //             .attr("alignment-baseline", "central");
 
     // append tooltip div
     var circlesGroup, circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup, circlesText);
@@ -272,7 +300,7 @@ d3.csv("assets/data/data.csv").then((hpdata) => {
                 // change classes to bold text
                 switch (chosenXAxis) {
                     case "poverty":
-                        xPovertyLabel.classed("active", true).classed("inactive", false);
+                        xPovertyLabel.classed("active aText", true).classed("inactive", false);
                         xAgeLabel.classed("inactive", true);
                         xIncomeLabel.classed("inactive", true);
                         break;
