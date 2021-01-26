@@ -25,7 +25,7 @@ Note: You'll need to use `python -m http.server` to run the visualization. This 
     - add tooltips to the circles and display each tooltip with the data that the user selected
     - use `d3-tip` plugin developed by <a href="https://github.com/Caged" rel="nofollow noreferrer noopener" target="_blank">Justin Palmer</a>
 
-### Screenshot
+### Screenshots
 #### Core Assignment
 <img src="https://github.com/tratnikc/D3-challenge/blob/main/Images/chart.png" width="960" height="500" />
 
