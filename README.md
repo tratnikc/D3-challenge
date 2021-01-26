@@ -26,4 +26,8 @@ Note: You'll need to use `python -m http.server` to run the visualization. This 
     - use `d3-tip` plugin developed by <a href="https://github.com/Caged" rel="nofollow noreferrer noopener" target="_blank">Justin Palmer</a>
 
 ### Screenshot
+#### Core Assignment
+<img src="https://github.com/tratnikc/D3-challenge/blob/main/Images/chart.png" width="600" height="500" />
+
+#### Bonus
 
