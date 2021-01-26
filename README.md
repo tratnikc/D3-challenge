@@ -30,4 +30,4 @@ Note: You'll need to use `python -m http.server` to run the visualization. This 
 <img src="https://github.com/tratnikc/D3-challenge/blob/main/Images/chart.png" width="600" height="500" />
 
 #### Bonus
-
+<img src="https://github.com/tratnikc/D3-challenge/blob/main/Images/tooltip.png" width="600" height="500">
