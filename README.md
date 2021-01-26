@@ -5,6 +5,7 @@
   2.  `index.html`
   3.  `assets/data/data.csv`
   4.  this README.md
+  5.  Images
   
 ### Core Assignment: D3 Dabbler (Required Assignment)
 Create a scatter plot between two of the data variables such as `Healthcare vs. Poverty` or `Smokers vs. Age`.
